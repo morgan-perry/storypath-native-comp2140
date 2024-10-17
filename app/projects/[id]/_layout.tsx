@@ -13,7 +13,7 @@ export default function ProjectLayout() {
           ),
         }}
       />
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="map"
         options={{
           title: "Map",
@@ -21,7 +21,7 @@ export default function ProjectLayout() {
             <FontAwesome name="map" size={24} color={color} />
           ),
         }}
-      />
+      /> */}
     </Tabs>
   );
 }

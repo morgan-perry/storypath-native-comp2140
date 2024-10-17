@@ -57,6 +57,22 @@ export interface ProjectLocation {
   score_points: number;
 }
 
+export interface Tracking {
+  id: number;
+  project_id: number;
+  location_id: number;
+  points: number;
+  username: string;
+  participant_username: string;
+}
+
+export interface NewTracking {
+  project_id: number;
+  location_id: number;
+  points: number;
+  participant_username: string;
+}
+
 /**
  * Helper function to handle API requests.
  * It sets the Authorization token and optionally includes the request body.
@@ -204,6 +220,75 @@ export async function deleteLocation(id: number): Promise<any> {
     } else {
     }
   } catch (error) {
+    return;
+  }
+}
+
+/**
+ * Function to get all tracking records for the current user.
+ *
+ * @returns {Promise<Tracking[]>} - An array of tracking objects.
+ */
+export async function getTrackingRecords(): Promise<Tracking[]> {
+  return apiRequest("/tracking");
+}
+
+/**
+ * Function to get tracking records for a specific project.
+ *
+ * @param {number} projectId - The ID of the project to get tracking records for.
+ * @returns {Promise<Tracking[]>} - An array of tracking objects for the specified project.
+ */
+export async function getTrackingRecordsByProject(projectId: number): Promise<Tracking[]> {
+  return apiRequest(`/tracking?project_id=eq.${projectId}`);
+}
+
+/**
+ * Function to create a new tracking record.
+ *
+ * @param {NewTracking} newTracking - The tracking data to insert.
+ * @returns {Promise<Tracking>} - The created tracking object returned by the API.
+ */
+export async function createTrackingRecord(newTracking: NewTracking): Promise<Tracking> {
+  return apiRequest("/tracking", "POST", newTracking);
+}
+
+/**
+ * Function to update an existing tracking record.
+ *
+ * @param {number} id - The ID of the tracking record to update.
+ * @param {Partial<Tracking>} partialUpdate - The partial update data.
+ * @returns {Promise<Tracking>} - The updated tracking object returned by the API.
+ */
+export async function updateTrackingRecord(
+  id: number,
+  partialUpdate: Partial<Tracking>
+): Promise<Tracking> {
+  const url = `/tracking?id=eq.${id}`;
+  return apiRequest(url, "PATCH", partialUpdate);
+}
+
+/**
+ * Function to delete a tracking record by its ID.
+ *
+ * @param {number} id - The ID of the tracking record to delete.
+ * @returns {Promise<any>} - The response from the API.
+ */
+export async function deleteTrackingRecord(id: number): Promise<any> {
+  const url = `/tracking?id=eq.${id}`;
+  try {
+    const response = await apiRequest(url, "DELETE");
+    if (!response || response.status === 204) {
+      // No Content
+      return {}; // or return a default value
+    }
+    if (response.ok) {
+      return await response.json();
+    } else {
+      throw new Error(`Error deleting tracking record ${id}: ${response.statusText}`);
+    }
+  } catch (error) {
+    console.error(error);
     return;
   }
 }
