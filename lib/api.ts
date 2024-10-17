@@ -249,8 +249,12 @@ export async function getTrackingRecordsByProject(projectId: number): Promise<Tr
  * @param {NewTracking} newTracking - The tracking data to insert.
  * @returns {Promise<Tracking>} - The created tracking object returned by the API.
  */
-export async function createTrackingRecord(newTracking: NewTracking): Promise<Tracking> {
-  return apiRequest("/tracking", "POST", newTracking);
+export async function createTrackingRecord(newTracking: Omit<NewTracking, 'participant_username'>): Promise<Tracking> {
+  const participantUsername = await AsyncStorage.getItem('participantUsername');
+  if (!participantUsername) {
+    throw new Error('Participant username not set');
+  }
+  return apiRequest("/tracking", "POST", { ...newTracking, participant_username: participantUsername });
 }
 
 /**

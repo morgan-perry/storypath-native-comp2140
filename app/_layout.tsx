@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 
 function CustomDrawerContent(props) {
-  const [username, setUsername] = useState('participant_username');
+  const [username, setUsername] = useState('');
 
   useEffect(() => {
     const loadUsername = async () => {
@@ -26,9 +26,7 @@ function CustomDrawerContent(props) {
   return (
     <DrawerContentScrollView {...props}>
       <View style={styles.userInfoSection}>
-        <Text style={styles.title}>StoryPath</Text>
-        <Text style={styles.userInfo}>Current User:</Text>
-        <Text style={styles.username}>{username}</Text>
+        <Text style={styles.username}>Current User: {username}</Text>
       </View>
       <DrawerItemList {...props} />
     </DrawerContentScrollView>
@@ -37,14 +35,12 @@ function CustomDrawerContent(props) {
 
 export default function RootLayout() {
   return (
-    <Drawer
-      drawerContent={(props) => <CustomDrawerContent {...props} />}
-    >
+    <Drawer drawerContent={(props) => <CustomDrawerContent {...props} />}>
       <Drawer.Screen
         name="index"
         options={{
-          drawerLabel: "Welcome",
-          title: "Welcome",
+          drawerLabel: "Home",
+          title: "Home",
           drawerIcon: ({ color }) => (
             <FontAwesome name="home" size={24} color={color} />
           ),
@@ -60,7 +56,7 @@ export default function RootLayout() {
           ),
         }}
       />
-      <Drawer.Screen
+      <Drawer.Screen 
         name="profile"
         options={{
           drawerLabel: "Profile",
@@ -70,39 +66,19 @@ export default function RootLayout() {
           ),
         }}
       />
-      <Drawer.Screen
-        name="about"
-        options={{
-          drawerLabel: "About",
-          title: "About",
-          drawerIcon: ({ color }) => (
-            <FontAwesome name="info-circle" size={24} color={color} />
-          ),
-        }}
-      />
     </Drawer>
   );
 }
 
 const styles = StyleSheet.create({
   userInfoSection: {
-    padding: 20,
+    paddingLeft: 20,
+    paddingVertical: 20,
     borderBottomWidth: 1,
     borderBottomColor: '#f4f4f4',
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#FF6B6B',
-    marginBottom: 10,
-  },
-  userInfo: {
-    fontSize: 14,
-    color: '#888',
   },
   username: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
   },
 });
