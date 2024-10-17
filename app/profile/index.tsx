@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CommonActions, useNavigation } from '@react-navigation/native';
+import { UserContext } from '../../contexts/UserContext';
 
 const ProfilePage: React.FC = () => {
   const [participantUsername, setParticipantUsername] = useState('');
   const navigation = useNavigation();
+  const { setUsername } = useContext(UserContext);
 
   useEffect(() => {
     loadUsername();
@@ -32,6 +41,9 @@ const ProfilePage: React.FC = () => {
       await AsyncStorage.setItem('participantUsername', participantUsername);
       Alert.alert('Success', 'Username saved successfully');
       
+      // Update the username in context
+      setUsername(participantUsername);
+
       // Update the drawer by forcing a re-render
       navigation.dispatch(
         CommonActions.reset({

@@ -1,27 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Drawer } from "expo-router/drawer";
-import { FontAwesome } from "@expo/vector-icons";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from 'react';
+import { Drawer } from 'expo-router/drawer';
+import { FontAwesome } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
+import { StyleSheet, View, Text } from 'react-native';
+import { UserProvider, UserContext } from '../contexts/UserContext';
 
 function CustomDrawerContent(props) {
-  const [username, setUsername] = useState('');
-
-  useEffect(() => {
-    const loadUsername = async () => {
-      try {
-        const storedUsername = await AsyncStorage.getItem('participantUsername');
-        if (storedUsername) {
-          setUsername(storedUsername);
-        }
-      } catch (error) {
-        console.error('Error loading username:', error);
-      }
-    };
-
-    loadUsername();
-  }, []);
+  const { username } = React.useContext(UserContext);
 
   return (
     <DrawerContentScrollView {...props}>
@@ -35,38 +20,34 @@ function CustomDrawerContent(props) {
 
 export default function RootLayout() {
   return (
-    <Drawer drawerContent={(props) => <CustomDrawerContent {...props} />}>
-      <Drawer.Screen
-        name="index"
-        options={{
-          drawerLabel: "Home",
-          title: "Home",
-          drawerIcon: ({ color }) => (
-            <FontAwesome name="home" size={24} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen
-        name="projects"
-        options={{
-          drawerLabel: "Projects",
-          title: "Projects",
-          drawerIcon: ({ color }) => (
-            <FontAwesome name="list" size={24} color={color} />
-          ),
-        }}
-      />
-      <Drawer.Screen 
-        name="profile"
-        options={{
-          drawerLabel: "Profile",
-          title: "Profile",
-          drawerIcon: ({ color }) => (
-            <FontAwesome name="user" size={24} color={color} />
-          ),
-        }}
-      />
-    </Drawer>
+    <UserProvider>
+      <Drawer drawerContent={(props) => <CustomDrawerContent {...props} />}>
+        <Drawer.Screen
+          name="index"
+          options={{
+            drawerLabel: 'Home',
+            title: 'Home',
+            drawerIcon: ({ color }) => <FontAwesome name="home" size={24} color={color} />,
+          }}
+        />
+        <Drawer.Screen
+          name="projects"
+          options={{
+            drawerLabel: 'Projects',
+            title: 'Projects',
+            drawerIcon: ({ color }) => <FontAwesome name="list" size={24} color={color} />,
+          }}
+        />
+        <Drawer.Screen
+          name="profile"
+          options={{
+            drawerLabel: 'Profile',
+            title: 'Profile',
+            drawerIcon: ({ color }) => <FontAwesome name="user" size={24} color={color} />,
+          }}
+        />
+      </Drawer>
+    </UserProvider>
   );
 }
 
